@@ -1,0 +1,17 @@
+
+1.Build
+	To compile: make -j[np], where np is number of processors used for compilation
+	To deactivate gprof -pg complie flag, please delete it from the Makefile
+
+2. Run
+	To run: mpirun -np 1 ./ns <name of config file>
+	To activate 3D scenatio please change dim to 3 and sizeZ values in config file.
+	To run 2D scenario please set dim to 2 and sizeZ to 0.
+
+3. Results saving
+	Results are saved in folders, which names consist of the type, dimension and
+	Re values. Output folders are automatically created and cleaned in case same
+	simulation is run. File names inside output folder consist of folder name and
+	timestep number. All folders are created in working directory.
+
+

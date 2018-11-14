@@ -1,8 +1,8 @@
 #### The petsc environment can also be fixed in the makefile
-# PETSC_DIR= 
+# PETSC_DIR=
 # PETSC_ARCH=arch-darwin-c-debug
-# PETSC_DIR = 
-# PETSC_ARCH = 
+# PETSC_DIR =
+# PETSC_ARCH =
 include ${PETSC_DIR}/conf/variables
 
 # default gnu compiler (currently not used)
@@ -13,7 +13,7 @@ include ${PETSC_DIR}/conf/variables
 #
 #
 CC = mpic++
-CFLAGS = -Wall -Werror -O3 
+CFLAGS = -Wall -Werror -O3 -pg
 SRCDIR = ./
 INCLUDE = -I. -Istencils ${PETSC_CC_INCLUDES}
 
@@ -25,7 +25,7 @@ OBJ = DataStructures.o Configuration.o 3rdparty/tinyxml2/tinyxml2.o SimpleTimer.
 NSOBJ = FlowField.o LinearSolver.o Meshsize.o\
 stencils/MaxUStencil.o stencils/MovingWallStencils.o stencils/PeriodicBoundaryStencils.o\
 stencils/FGHStencil.o solvers/SORSolver.o solvers/PetscSolver.o \
-stencils/RHSStencil.o stencils/VelocityStencil.o \
+stencils/RHSStencil.o stencils/VelocityStencil.o stencils/VTKStencil.o \
 parallelManagers/PetscParallelConfiguration.o\
 GlobalBoundaryFactory.o\
 stencils/BFStepInitStencil.o stencils/NeumannBoundaryStencils.o stencils/BFInputStencils.o stencils/ObstacleStencil.o\

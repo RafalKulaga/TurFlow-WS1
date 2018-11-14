@@ -54,6 +54,9 @@ class Simulation {
 
     PetscSolver _solver;
 
+    VTKStencil _VTKStencil;
+    FieldIterator<FlowField> _VTKStencilIterator;
+
 
   public:
     Simulation(Parameters &parameters, FlowField &flowField):
@@ -73,7 +76,9 @@ class Simulation {
        _obstacleStencil(parameters),
        _velocityIterator(_flowField,parameters,_velocityStencil),
        _obstacleIterator(_flowField,parameters,_obstacleStencil),
-       _solver(_flowField,parameters)
+       _solver(_flowField,parameters),
+       _VTKStencil(parameters),
+       _VTKStencilIterator(_flowField, parameters, _VTKStencil, 1,0) // skip the additional layer
        {
        }
 
@@ -108,7 +113,7 @@ class Simulation {
             for(int j=0;j<sizez + 3;j++)
               rhs.getScalar(0,i,j) =value;
 	    }
-	    
+
 	    // do same procedure for domain flagging as for regular channel
 	    BFStepInitStencil stencil(_parameters);
         FieldIterator<FlowField> iterator(_flowField,_parameters,stencil,0,1);
@@ -126,22 +131,24 @@ class Simulation {
         _wallFGHIterator.iterate();
         // compute the right hand side
         _rhsIterator.iterate();
-        // solve for pressure 
+        // solve for pressure
         _solver.solve();
         // TODO WS2: communicate pressure values
         // compute velocity
         _velocityIterator.iterate();
-	// set obstacle boundaries
-	_obstacleIterator.iterate();
+	       // set obstacle boundaries
+	        _obstacleIterator.iterate();
         // TODO WS2: communicate velocity values
         // Iterate for velocities on the boundary
         _wallVelocityIterator.iterate();
     }
 
-    /** TODO WS1: plots the flow field. */
+    /** DONE WS1: plots the flow field. */
     virtual void plotVTK(int timeStep){
-      // TODO WS1: create VTKStencil and respective iterator; iterate stencil
+      // DONE WS1: create VTKStencil and respective iterator; iterate stencil
       //           over _flowField and write flow field information to vtk file
+      _VTKStencilIterator.iterate(); // _VTKStencil and _VTKStencilIterator created within initilizer list
+      _VTKStencil.write(_flowField, timeStep);
     }
 
   protected:
@@ -183,4 +190,3 @@ class Simulation {
 };
 
 #endif // _SIMULATION_H_
-

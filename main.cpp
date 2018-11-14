@@ -28,7 +28,7 @@ int main (int argc, char *argv[]) {
     MeshsizeFactory::getInstance().initMeshsize(parameters);
     FlowField *flowField = NULL;
     Simulation *simulation = NULL;
-    
+
     #ifdef DEBUG
     std::cout << "Processor " << parameters.parallel.rank << " with index ";
     std::cout << parameters.parallel.indices[0] << ",";
@@ -59,13 +59,14 @@ int main (int argc, char *argv[]) {
     // call initialization of simulation (initialize flow field)
     if(simulation == NULL){ handleError(1, "simulation==NULL!"); }
     simulation->initializeFlowField();
-    flowField->getFlags().show();
+    //flowField->getFlags().show();
 
     FLOAT time = 0.0;
     FLOAT timeStdOut=parameters.stdOut.interval;
     int timeSteps = 0;
-
-    // TODO WS1: plot initial state
+    int i = 1; // controlling the VTK output triggering
+    // DONE WS1: plot initial state
+    simulation->plotVTK(timeSteps);
 
     // time loop
     while (time < parameters.simulation.finalTime){
@@ -80,12 +81,18 @@ int main (int argc, char *argv[]) {
                         parameters.timestep.dt << std::endl;
           timeStdOut += parameters.stdOut.interval;
       }
-      // TODO WS1: trigger VTK output
-      timeSteps++;
+      // DONE WS1: trigger VTK output
+      if( time >= parameters.vtk.interval*i){
+        simulation->plotVTK(timeSteps);
+        ++i;
+     }
+     timeSteps++;
+
     }
 
-    // TODO WS1: plot final output
-
+    // DONE WS1: plot final output
+    simulation->plotVTK(timeSteps);
+    std::cout << "Simulation finished after " << timeSteps << " timesteps" << std::endl;
     delete simulation; simulation=NULL;
     delete flowField;  flowField= NULL;
 
